@@ -44,14 +44,42 @@ document.addEventListener("DOMContentLoaded", () => {
     // Toast Element
     const toast = document.getElementById("toast");
 
+    // Theme Toggle DOM Elements
+    const themeToggleBtn = document.getElementById("theme-toggle-btn");
+    const themeIcon = document.getElementById("theme-icon");
+
     // History state
     let history = JSON.parse(localStorage.getItem("sentiment_history") || "[]");
 
     // 1. Initialize Application
+    initTheme();
     checkModelStatus();
     renderHistory();
     
+    function initTheme() {
+        const savedTheme = localStorage.getItem("theme_pref");
+        if (savedTheme === "light") {
+            document.body.classList.add("light-theme");
+            themeIcon.className = "fa-solid fa-sun";
+        } else {
+            document.body.classList.remove("light-theme");
+            themeIcon.className = "fa-solid fa-moon";
+        }
+    }
+    
     // 2. Event Listeners
+    
+    // Theme toggle click handler
+    themeToggleBtn.addEventListener("click", () => {
+        const isLight = document.body.classList.toggle("light-theme");
+        if (isLight) {
+            themeIcon.className = "fa-solid fa-sun";
+            localStorage.setItem("theme_pref", "light");
+        } else {
+            themeIcon.className = "fa-solid fa-moon";
+            localStorage.setItem("theme_pref", "dark");
+        }
+    });
     
     // Textarea input char counter
     reviewInput.addEventListener("input", () => {

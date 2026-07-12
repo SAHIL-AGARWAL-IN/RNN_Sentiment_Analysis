@@ -25,6 +25,70 @@
     --font-body: 'Plus Jakarta Sans', sans-serif;
 }
 
+body.light-theme {
+    --bg-dark: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.8);
+    --card-border: rgba(15, 23, 42, 0.08);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --primary-glow: rgba(99, 102, 241, 0.15);
+}
+
+/* Light theme specific component overrides */
+body.light-theme .glow-orb {
+    opacity: 0.15;
+}
+body.light-theme .glass-bg {
+    background: radial-gradient(circle at 50% 50%, #eff6ff, #f8fafc);
+}
+body.light-theme textarea {
+    background: rgba(255, 255, 255, 0.8);
+    color: #0f172a;
+}
+body.light-theme textarea:focus {
+    background: #ffffff;
+}
+body.light-theme .step-card {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(15, 23, 42, 0.05);
+}
+body.light-theme .step-card.active {
+    background: rgba(99, 102, 241, 0.04);
+}
+body.light-theme .step-body {
+    background: rgba(255, 255, 255, 0.7);
+    border-top-color: rgba(15, 23, 42, 0.05);
+}
+body.light-theme .code-font {
+    color: #4f46e5;
+}
+body.light-theme .verdict-card,
+body.light-theme .stat-item,
+body.light-theme .history-item {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.04);
+}
+body.light-theme .history-item:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+body.light-theme .history-empty {
+    color: #64748b;
+}
+body.light-theme .github-btn,
+body.light-theme .theme-toggle-btn,
+body.light-theme .status-badge {
+    background: rgba(15, 23, 42, 0.04);
+    border-color: rgba(15, 23, 42, 0.08);
+}
+body.light-theme .github-btn:hover,
+body.light-theme .theme-toggle-btn:hover {
+    background: rgba(15, 23, 42, 0.08);
+}
+body.light-theme .gauge-bg {
+    stroke: rgba(0, 0, 0, 0.05);
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -166,6 +230,59 @@ body {
     color: var(--text-secondary);
     letter-spacing: 0.5px;
     text-transform: uppercase;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.github-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+    color: var(--text-primary);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-weight: 500;
+    transition: background var(--transition-speed), border-color var(--transition-speed), transform var(--transition-speed);
+}
+
+.github-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.github-btn i {
+    font-size: 15px;
+}
+
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+    cursor: pointer;
+    font-size: 14px;
+    transition: background var(--transition-speed), border-color var(--transition-speed), transform var(--transition-speed), color var(--transition-speed);
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
 }
 
 .status-badge {
