@@ -1,5 +1,7 @@
 # IMDB Movie Review Sentiment Analyzer (RNN)
 
+🚀 **Live Demo**: [https://imdb-rnn-sentiment-analyzer.onrender.com/](https://imdb-rnn-sentiment-analyzer.onrender.com/)
+
 This project features a Recurrent Neural Network (RNN) built in PyTorch to classify the sentiment of movie reviews (Positive or Negative). It includes a robust web-based UI for real-time predictions, detailed step-by-step visualization of text preprocessing, and a historical log of queries.
 
 ## Features
