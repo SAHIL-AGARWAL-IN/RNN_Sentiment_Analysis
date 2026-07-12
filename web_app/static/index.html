@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMDB Sentiment Analyzer (RNN)</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-area">
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-brain-circuit"></i>
+                    </div>
+                    <div>
+                        <h1>IMDB Sentiment Analyzer</h1>
+                        <p class="subtitle">Deep Learning RNN Model</p>
+                    </div>
+                </div>
+                <div class="status-badge" id="model-status">
+                    <span class="pulse-dot"></span>
+                    <span class="status-text">Loading Model...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="workspace-grid">
+            
+            <!-- Left Side: Input & Quick Templates -->
+            <section class="input-panel glass-card">
+                <div class="card-header">
+                    <h2><i class="fa-regular fa-message"></i> Enter Movie Review</h2>
+                    <span class="char-count" id="char-counter">0 / 1000 chars</span>
+                </div>
+                
+                <div class="input-area">
+                    <textarea 
+                        id="review-input" 
+                        placeholder="Write or paste your movie review here... E.g., 'This movie was absolutely spectacular! The acting was superb and the plot kept me engaged from start to finish. Highly recommend!'" 
+                        maxlength="2000"
+                    ></textarea>
+                    <button class="clear-btn" id="clear-input-btn" title="Clear text">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <div class="action-bar">
+                    <button id="analyze-btn" class="primary-btn">
+                        <span class="btn-text">Analyze Sentiment</span>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </button>
+                </div>
+
+                <!-- Quick Try Templates -->
+                <div class="templates-section">
+                    <h3><i class="fa-solid fa-lightbulb"></i> Quick Try Samples</h3>
+                    <div class="templates-container">
+                        <button class="template-chip positive-chip" data-text="A true masterpiece! The cinematography was breathtaking and the emotional weight of the performances was incredible. I was hooked from the very first minute.">
+                            <i class="fa-solid fa-face-smile"></i> Masterpiece
+                        </button>
+                        <button class="template-chip positive-chip" data-text="Honestly a wonderful little production. Very humble acting, pleasant storyline, and a beautiful background score that perfectly sets the mood.">
+                            <i class="fa-solid fa-thumbs-up"></i> Pleasant Indie
+                        </button>
+                        <button class="template-chip negative-chip" data-text="Complete waste of time. The plot was filled with holes, the acting was wooden, and the dialogue felt incredibly forced and amateurish. Don't bother watching.">
+                            <i class="fa-solid fa-face-frown"></i> Waste of Time
+                        </button>
+                        <button class="template-chip negative-chip" data-text="Bad plot, bad acting, idiotic direction, and terrible editing. I couldn't even finish the movie because it was so boring. Utterly disappointed.">
+                            <i class="fa-solid fa-thumbs-down"></i> Utter Trash
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Side: Sentiment Output & Prediction Gauge -->
+            <section class="results-panel glass-card" id="results-panel">
+                <div class="empty-state" id="results-empty">
+                    <i class="fa-solid fa-chart-simple empty-icon"></i>
+                    <h3>Awaiting Analysis</h3>
+                    <p>Enter a review and click "Analyze Sentiment" to run the RNN model classification.</p>
+                </div>
+
+                <div class="results-content hidden" id="results-content">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-square-poll-vertical"></i> Classification Result</h2>
+                    </div>
+
+                    <!-- Gauge and Core Result -->
+                    <div class="result-summary">
+                        <div class="gauge-wrapper">
+                            <svg class="radial-gauge" viewBox="0 0 120 120">
+                                <circle class="gauge-bg" cx="60" cy="60" r="50"></circle>
+                                <circle class="gauge-progress" id="gauge-path" cx="60" cy="60" r="50"></circle>
+                            </svg>
+                            <div class="gauge-text">
+                                <span class="gauge-percentage" id="gauge-pct">0%</span>
+                                <span class="gauge-label" id="gauge-label">Positive</span>
+                            </div>
+                        </div>
+
+                        <div class="verdict-card" id="verdict-card">
+                            <span class="badge" id="sentiment-badge">Positive</span>
+                            <div class="confidence-title">Confidence Level</div>
+                            <div class="confidence-value" id="confidence-val">0.0%</div>
+                            <p class="verdict-desc" id="verdict-desc">The model predicts that this movie review expresses positive sentiment.</p>
+                        </div>
+                    </div>
+
+                    <!-- Tabs/Steps for Text Preprocessing -->
+                    <div class="pipeline-section">
+                        <h3><i class="fa-solid fa-gears"></i> NLP Preprocessing Inspector</h3>
+                        <p class="pipeline-desc">See how the deep learning model cleans and processes the raw text before classification:</p>
+                        
+                        <div class="pipeline-steps">
+                            <!-- Step 1: Raw -->
+                            <div class="step-card active" data-step="1">
+                                <div class="step-header">
+                                    <div class="step-number">1</div>
+                                    <span class="step-title">Raw Review Text</span>
+                                </div>
+                                <div class="step-body code-font" id="step-raw"></div>
+                            </div>
+
+                            <!-- Step 2: Cleaned (URL & HTML & Lowercase) -->
+                            <div class="step-card" data-step="2">
+                                <div class="step-header">
+                                    <div class="step-number">2</div>
+                                    <span class="step-title">Lowercase & HTML/URL Cleaned</span>
+                                </div>
+                                <div class="step-body code-font" id="step-cleaned"></div>
+                            </div>
+
+                            <!-- Step 3: Punctuation Removed -->
+                            <div class="step-card" data-step="3">
+                                <div class="step-header">
+                                    <div class="step-number">3</div>
+                                    <span class="step-title">Punctuation Stripped</span>
+                                </div>
+                                <div class="step-body code-font" id="step-punc"></div>
+                            </div>
+
+                            <!-- Step 4: Stopwords Removed -->
+                            <div class="step-card" data-step="4">
+                                <div class="step-header">
+                                    <div class="step-number">4</div>
+                                    <span class="step-title">Stopwords Filtered</span>
+                                </div>
+                                <div class="step-body" id="step-stopwords">
+                                    <div class="step-body-text code-font" id="step-stopwords-text"></div>
+                                    <div class="removed-words-container hidden" id="removed-stopwords-box">
+                                        <h4>Removed Stopwords:</h4>
+                                        <div class="chips-container" id="removed-stopwords-chips"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 5: Stemming -->
+                            <div class="step-card" data-step="5">
+                                <div class="step-header">
+                                    <div class="step-number">5</div>
+                                    <span class="step-title">Porter Stemmer Output (Final Vectors)</span>
+                                </div>
+                                <div class="step-body code-font" id="step-stemmed"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Bottom Grid: Model Stats and Query History -->
+        <section class="bottom-grid">
+            <!-- Model Stats -->
+            <div class="glass-card stats-card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-circle-info"></i> RNN Model Architecture Details</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-lbl">Model Type</div>
+                        <div class="stat-val" id="stat-model-type">RNN (Recurrent Neural Net)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-lbl">Test Set Accuracy</div>
+                        <div class="stat-val text-accent" id="stat-accuracy">85.59%</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-lbl">Vocabulary Size</div>
+                        <div class="stat-val" id="stat-vocab">5,000 features</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-lbl">Hidden Layer Size</div>
+                        <div class="stat-val" id="stat-hidden">128 nodes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-lbl">Dataset Trained On</div>
+                        <div class="stat-val">50,000 Reviews (IMDB)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-lbl">Embedding Method</div>
+                        <div class="stat-val">TF-IDF Vectorization</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History log -->
+            <div class="glass-card history-card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-history"></i> Recent Queries</h2>
+                    <button class="text-btn" id="clear-history-btn">Clear All</button>
+                </div>
+                <div class="history-list-container">
+                    <div class="history-empty" id="history-empty">
+                        <p>No reviews analyzed yet.</p>
+                    </div>
+                    <ul class="history-list hidden" id="history-list"></ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer-bar">
+            <p>IMDB Sentiment Analyzer • Built using PyTorch, NLTK, FastAPI & Vanilla Web Stack</p>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast hidden" id="toast">
+        <i class="fa-solid fa-circle-exclamation toast-icon"></i>
+        <span class="toast-msg">Something went wrong!</span>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

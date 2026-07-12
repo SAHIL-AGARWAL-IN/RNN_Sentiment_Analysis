@@ -1,0 +1,13 @@
+# PyTorch (CPU-only by default for cloud deployments to keep slug size small)
+torch --index-url https://download.pytorch.org/whl/cpu
+
+# Machine Learning & NLP
+scikit-learn
+nltk
+pandas
+numpy
+
+# Web Server & Framework
+fastapi
+uvicorn
+gunicorn

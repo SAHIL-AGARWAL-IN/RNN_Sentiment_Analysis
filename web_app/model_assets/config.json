@@ -1,0 +1,12 @@
+{
+    "input_size": 5000,
+    "hidden_size": 128,
+    "num_layers": 1,
+    "classes": [
+        "negative",
+        "positive"
+    ],
+    "accuracy": 86.83069476656246,
+    "training_time_seconds": 153.6395149230957,
+    "trained_date": "2026-07-12 19:34:22"
+}
