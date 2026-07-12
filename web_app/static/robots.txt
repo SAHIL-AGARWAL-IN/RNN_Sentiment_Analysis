@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://imdb-rnn-sentiment-analyzer.onrender.com/sitemap.xml

@@ -222,3 +222,24 @@ async def serve_index():
     if os.path.exists(index_path):
         return FileResponse(index_path)
     return {"message": "Backend API is running. UI files not found in static folder."}
+
+@app.get("/sw.js")
+async def serve_sw():
+    sw_path = os.path.join(STATIC_DIR, "sw.js")
+    if os.path.exists(sw_path):
+        return FileResponse(sw_path, media_type="application/javascript")
+    raise HTTPException(status_code=404, detail="Service Worker file not found.")
+
+@app.get("/robots.txt")
+async def serve_robots():
+    robots_path = os.path.join(STATIC_DIR, "robots.txt")
+    if os.path.exists(robots_path):
+        return FileResponse(robots_path, media_type="text/plain")
+    raise HTTPException(status_code=404, detail="Robots.txt file not found.")
+
+@app.get("/sitemap.xml")
+async def serve_sitemap():
+    sitemap_path = os.path.join(STATIC_DIR, "sitemap.xml")
+    if os.path.exists(sitemap_path):
+        return FileResponse(sitemap_path, media_type="application/xml")
+    raise HTTPException(status_code=404, detail="Sitemap.xml file not found.")

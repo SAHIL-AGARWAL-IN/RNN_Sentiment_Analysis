@@ -1,0 +1,21 @@
+{
+  "short_name": "ReviewSentiment",
+  "name": "IMDB Movie Review Sentiment Analyzer",
+  "icons": [
+    {
+      "src": "/static/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "display": "standalone",
+  "orientation": "portrait"
+}
